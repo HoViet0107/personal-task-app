@@ -13,7 +13,8 @@
   - 
   --------------------------
 + quản lý bản thân
-  - 
+  - db: ngày tháng, tổng thời gian làm việc, thời gian bắt đầu làm, thời gian kết thúc(xử lý khi quên kết thúc),check tash đã làm hay chưa,
+  - fe: hiển thị giao diện người dùng, crud task
   --------------------------
 + quản lý chi tiêu
   - 
