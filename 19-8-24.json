@@ -1,0 +1,544 @@
+{
+  "hoadon": {
+    "16_8_2024": [
+      {
+        "id": "0",
+        "khachHang": "200000000",
+        "ngay": "17/08/2024 11:48",
+        "sanPham": [
+          {
+            "dvt": "Thùng",
+            "gia": 1114,
+            "sl": 30,
+            "tenSp": "bánh thuyền",
+            "thanhtien": 33420
+          },
+          {
+            "dvt": "Gói",
+            "gia": 39,
+            "sl": 16,
+            "tenSp": "ăn kiêng (16g)",
+            "thanhtien": 624
+          },
+          {
+            "dvt": "Thùng",
+            "gia": 333,
+            "sl": 23,
+            "tenSp": "4",
+            "thanhtien": 7659
+          }
+        ],
+        "tongTien": 41703
+      },
+      {
+        "khachHang": "2127381",
+        "ngay": "17/08/2024 11:49",
+        "sanPham": [
+          {
+            "dvt": "Thùng",
+            "gia": 1,
+            "sl": 1,
+            "tenSp": "1",
+            "thanhtien": 1
+          },
+          {
+            "dvt": "Gói",
+            "gia": 2,
+            "sl": 2,
+            "tenSp": "2",
+            "thanhtien": 4
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 3,
+            "sl": 3,
+            "tenSp": "3",
+            "thanhtien": 9
+          }
+        ],
+        "tongTien": 14
+      },
+      {
+        "khachHang": "aaaa",
+        "ngay": "17/08/2024 12:26",
+        "sanPham": [
+          {
+            "dvt": "Thùng",
+            "gia": 11,
+            "sl": 1,
+            "tenSp": "asasassa",
+            "thanhtien": 11
+          }
+        ],
+        "tongTien": 11
+      },
+      {
+        "khachHang": "e",
+        "ngay": "17/08/2024 12:44",
+        "sanPham": [
+          {
+            "dvt": "Thùng",
+            "gia": 1,
+            "sl": 1,
+            "tenSp": "asdf",
+            "thanhtien": 1
+          }
+        ],
+        "tongTien": 1
+      },
+      {
+        "khachHang": "v",
+        "ngay": "17/08/2024 12:44",
+        "sanPham": [
+          {
+            "dvt": "Thùng",
+            "gia": 1,
+            "sl": 1,
+            "tenSp": "asdf",
+            "thanhtien": 1
+          }
+        ],
+        "tongTien": 1
+      },
+      null,
+      {
+        "khachHang": "trang",
+        "ngay": "17/08/2024 12:44",
+        "sanPham": [
+          {
+            "dvt": "Thùng",
+            "gia": 1,
+            "sl": 1,
+            "tenSp": "asdf",
+            "thanhtien": 1
+          }
+        ],
+        "tongTien": 1
+      },
+      {
+        "khachHang": "poqiewr",
+        "ngay": "17/08/2024 12:44",
+        "sanPham": [
+          {
+            "dvt": "Thùng",
+            "gia": 1,
+            "sl": 1,
+            "tenSp": "asdf",
+            "thanhtien": 1
+          }
+        ],
+        "tongTien": 1
+      }
+    ],
+    "17_8_2024": {
+      "5": {
+        "khachHang": "Thư lữ",
+        "ngay": "17/08/2024 22:09",
+        "sanPham": [
+          {
+            "dvt": "Gói",
+            "gia": 135,
+            "sl": 10,
+            "tenSp": "Bánh thuyền",
+            "thanhtien": 1350
+          },
+          {
+            "dvt": "Thùng",
+            "gia": 624,
+            "sl": 1,
+            "tenSp": "Ăn kiêng 16g",
+            "thanhtien": 624
+          },
+          {
+            "dvt": "Thùng",
+            "gia": 492,
+            "sl": 2,
+            "tenSp": "Kiêng đài",
+            "thanhtien": 984
+          },
+          {
+            "dvt": "Thùng",
+            "gia": 760,
+            "sl": 1,
+            "tenSp": "Kiêng hàn",
+            "thanhtien": 760
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 65,
+            "sl": 10,
+            "tenSp": "Đồng tiền",
+            "thanhtien": 650
+          }
+        ],
+        "tongTien": 4368
+      },
+      "6": {
+        "khachHang": "trang",
+        "ngay": "17/08/2024 12:44",
+        "sanPham": [
+          {
+            "dvt": "Thùng",
+            "gia": 1,
+            "sl": 1,
+            "tenSp": "asdf",
+            "thanhtien": 1
+          }
+        ],
+        "tongTien": 1
+      },
+      "7": {
+        "khachHang": "vân cần",
+        "ngay": "17/08/2024 15:17",
+        "sanPham": [
+          {
+            "dvt": "Gói",
+            "gia": 135,
+            "sl": 10,
+            "tenSp": "bánh thuyền",
+            "thanhtien": 1350
+          }
+        ],
+        "tongTien": 1350
+      }
+    },
+    "18_8_2024": [
+      {
+        "id": "0",
+        "khachHang": "Thành vinh",
+        "ngay": "18/08/2024 22:27",
+        "sanPham": [
+          {
+            "dvt": "Gói",
+            "gia": 16,
+            "sl": 30,
+            "tenSp": "Cơm cháy",
+            "thanhtien": 480
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 65,
+            "sl": 10,
+            "tenSp": "Đồng tiền",
+            "thanhtien": 650
+          }
+        ],
+        "tongTien": 1130
+      }
+    ],
+    "19_8_2024": [
+      {
+        "id": "0",
+        "khachHang": "Sữa bỉm",
+        "ngay": "19/08/2024 10:15",
+        "sanPham": [
+          {
+            "dvt": "Thùng",
+            "gia": 185,
+            "sl": 1,
+            "tenSp": "Sữa đài",
+            "thanhtien": 185
+          },
+          {
+            "dvt": "Gói",
+            "gia": 32,
+            "sl": 10,
+            "tenSp": "Xúc xích",
+            "thanhtien": 320
+          },
+          {
+            "dvt": "Bịch",
+            "gia": 35,
+            "sl": 2,
+            "tenSp": "Tráng trộn",
+            "thanhtien": 70
+          }
+        ],
+        "tongTien": 575
+      },
+      {
+        "id": "1",
+        "khachHang": "Hiệu ngân",
+        "ngay": "19/08/2024 10:47",
+        "sanPham": [
+          {
+            "dvt": "Gói",
+            "gia": 45,
+            "sl": 5,
+            "tenSp": "Nấu to",
+            "thanhtien": 225
+          },
+          {
+            "dvt": "Gói",
+            "gia": 27,
+            "sl": 5,
+            "tenSp": "Nấu nhỏ",
+            "thanhtien": 135
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 80,
+            "sl": 5,
+            "tenSp": "Óc nếp",
+            "thanhtien": 400
+          }
+        ],
+        "tongTien": 760
+      },
+      {
+        "khachHang": "Minh anh",
+        "ngay": "19/08/2024 11:03",
+        "sanPham": [
+          {
+            "dvt": "Gói",
+            "gia": 48,
+            "sl": 5,
+            "tenSp": "Chia",
+            "thanhtien": 240
+          }
+        ],
+        "tongTien": 240
+      },
+      {
+        "id": "3",
+        "khachHang": "Hùng quyên",
+        "ngay": "19/08/2024 11:33",
+        "sanPham": [
+          {
+            "dvt": "Hộp",
+            "gia": 50,
+            "sl": 5,
+            "tenSp": "Khô heo",
+            "thanhtien": 250
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 65,
+            "sl": 5,
+            "tenSp": "Bò miếng",
+            "thanhtien": 325
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 45,
+            "sl": 5,
+            "tenSp": "Khô gà",
+            "thanhtien": 225
+          }
+        ],
+        "tongTien": 800
+      },
+      {
+        "khachHang": "Đức thuý",
+        "ngay": "19/08/2024 11:59",
+        "sanPham": [
+          {
+            "dvt": "Hộp",
+            "gia": 65,
+            "sl": 5,
+            "tenSp": "Đồng tiền",
+            "thanhtien": 325
+          }
+        ],
+        "tongTien": 325
+      },
+      {
+        "khachHang": "Phúc hiền",
+        "ngay": "19/08/2024 13:01",
+        "sanPham": [
+          {
+            "dvt": "Hộp",
+            "gia": 75,
+            "sl": 5,
+            "tenSp": "Cá thiều",
+            "thanhtien": 375
+          },
+          {
+            "dvt": "Bịch",
+            "gia": 34,
+            "sl": 5,
+            "tenSp": "Rong ống",
+            "thanhtien": 170
+          },
+          {
+            "dvt": "Bịch",
+            "gia": 112,
+            "sl": 5,
+            "tenSp": "Hướng dương",
+            "thanhtien": 560
+          }
+        ],
+        "tongTien": 1105
+      },
+      {
+        "khachHang": "Thư lữ",
+        "ngay": "19/08/2024 13:47",
+        "sanPham": [
+          {
+            "dvt": "Gói",
+            "gia": 31,
+            "sl": 30,
+            "tenSp": "Xúc xích",
+            "thanhtien": 930
+          },
+          {
+            "dvt": "Gói",
+            "gia": 135,
+            "sl": 5,
+            "tenSp": "Bánh thuyền",
+            "thanhtien": 675
+          },
+          {
+            "dvt": "Thùng",
+            "gia": 484,
+            "sl": 1,
+            "tenSp": "Men thái",
+            "thanhtien": 484
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 45,
+            "sl": 15,
+            "tenSp": "Khô gà",
+            "thanhtien": 675
+          },
+          {
+            "dvt": "Thùng",
+            "gia": 216,
+            "sl": 2,
+            "tenSp": "Nc đào",
+            "thanhtien": 432
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 65,
+            "sl": 5,
+            "tenSp": "Bò miếng",
+            "thanhtien": 325
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 24,
+            "sl": 10,
+            "tenSp": "Gạo lứt",
+            "thanhtien": 240
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 65,
+            "sl": 5,
+            "tenSp": "Đồng tiền",
+            "thanhtien": 325
+          },
+          {
+            "dvt": "Thùng",
+            "gia": 235,
+            "sl": 3,
+            "tenSp": "Bánh cuộn",
+            "thanhtien": 705
+          },
+          {
+            "dvt": "Thùng",
+            "gia": 370,
+            "sl": 2,
+            "tenSp": "Gông",
+            "thanhtien": 740
+          }
+        ],
+        "tongTien": 5531
+      },
+      {
+        "id": "7",
+        "khachHang": "Việt thái mart",
+        "ngay": "19/08/2024 15:41",
+        "sanPham": [
+          {
+            "dvt": "Gói",
+            "gia": 45,
+            "sl": 15,
+            "tenSp": "Hạt chia",
+            "thanhtien": 675
+          },
+          {
+            "dvt": "Gói",
+            "gia": 19,
+            "sl": 30,
+            "tenSp": "Yến mạch",
+            "thanhtien": 570
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 90,
+            "sl": 10,
+            "tenSp": "Xoài sấy dẻo",
+            "thanhtien": 900
+          },
+          {
+            "dvt": "Gói",
+            "gia": 43,
+            "sl": 8,
+            "tenSp": "Kiêng hàn",
+            "thanhtien": 344
+          },
+          {
+            "dvt": "Gói",
+            "gia": 39,
+            "sl": 8,
+            "tenSp": "Ăn Kiêng 16 gói",
+            "thanhtien": 312
+          }
+        ],
+        "tongTien": 2801
+      },
+      {
+        "khachHang": "Hd mart",
+        "ngay": "19/08/2024 16:03",
+        "sanPham": [
+          {
+            "dvt": "Bịch",
+            "gia": 38,
+            "sl": 6,
+            "tenSp": "Rong ống",
+            "thanhtien": 228
+          }
+        ],
+        "tongTien": 228
+      },
+      {
+        "khachHang": "Ngọc tiên",
+        "ngay": "19/08/2024 16:33",
+        "sanPham": [
+          {
+            "dvt": "Hộp",
+            "gia": 125,
+            "sl": 2,
+            "tenSp": "Mix",
+            "thanhtien": 250
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 30,
+            "sl": 5,
+            "tenSp": "Khô gà",
+            "thanhtien": 150
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 90,
+            "sl": 3,
+            "tenSp": "Xoài sấy",
+            "thanhtien": 270
+          },
+          {
+            "dvt": "Hộp",
+            "gia": 65,
+            "sl": 3,
+            "tenSp": "Khô bò miếng",
+            "thanhtien": 195
+          }
+        ],
+        "tongTien": 865
+      }
+    ]
+  }
+}
