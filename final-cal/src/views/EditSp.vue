@@ -94,8 +94,8 @@ export default {
     }
   },
   methods: {
-    fetchInvoice(id) {
-      const invoiceRef = ref(database, `hoadon/${this.currentDate}/${id}`)
+    fetchInvoice(id, selectedDate) {
+      const invoiceRef = ref(database, `hoadon/${selectedDate}/${id}`)
       console.log('Đường dẫn đến dữ liệu:', invoiceRef.toString()) // Log đường dẫn để kiểm tra
 
       get(invoiceRef)
@@ -156,9 +156,10 @@ export default {
   },
   mounted() {
     const id = this.$route.query.id
+    const selectedDate = this.$route.query.date
     console.log('ID nhận được:', id) // Log ID để kiểm tra
     if (id) {
-      this.fetchInvoice(id)
+      this.fetchInvoice(id, selectedDate)
     }
   }
 }

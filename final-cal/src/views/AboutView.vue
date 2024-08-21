@@ -1,82 +1,3 @@
-<template>
-  <div class="about">
-    <h1>Danh sách hóa đơn</h1>
-
-    <!-- Chọn ngày -->
-    <div class="date-select">
-      <label for="select-date">Chọn ngày:</label>
-      <select class="select-date" v-model="selectedDate" @change="fetchInvoices">
-        <option class="select-date-option" v-for="date in availableDates" :key="date" :value="date">
-          {{ date }}
-        </option>
-      </select>
-      <label for="total-invoices"
-        >&nbsp;Tổng tiền:
-        <span style="color: green; font-weight: 600">{{ totalInvoices() }}</span></label
-      >
-    </div>
-
-    <!-- Danh sách hóa đơn và spinner -->
-    <div>
-      <div v-if="loading" class="spinner"></div>
-      <div v-else-if="invoices.length > 0">
-        <ul>
-          <li class="span-li" v-for="invoice in paginatedInvoices" :key="invoice.id">
-            <p>KH:</p>
-            <p class="kh-li" @click="viewInvoice(invoice)">{{ invoice.khachHang }}</p>
-            <button @click="deleteInvoice(invoice.id)">🗑️</button>
-            <button @click="editInvoice(invoice)">✏️</button>
-          </li>
-        </ul>
-
-        <!-- Phân trang -->
-        <div class="pagination">
-          <button @click="prevPage" :disabled="currentPage === 1">«</button> &nbsp;
-          <button v-for="page in totalPages" :key="page" @click="changePage(page)">
-            {{ page }}
-          </button>
-          &nbsp;
-          <button @click="nextPage" :disabled="currentPage === totalPages">»</button>
-          <!-- xuất toàn bộ hóa đơn ra file excel -->
-          <button @click="exportToExcel" style="padding: 5px 15px; float: right">Xuất</button>
-        </div>
-      </div>
-      <div v-else>
-        <p>Không có hóa đơn nào để hiển thị.</p>
-      </div>
-    </div>
-
-    <!-- Chi tiết hóa đơn -->
-    <div v-if="selectedInvoice">
-      <h2>Chi tiết hóa đơn</h2>
-      <p><strong>Khách hàng:</strong> {{ selectedInvoice.khachHang }}</p>
-      <p><strong>Ngày:</strong> {{ selectedInvoice.ngay }}</p>
-      <ul class="detail">
-        <li class="detail-li">
-          <span> Tên SP </span>
-          <span>- SL</span>
-          <span>- ĐVT</span>
-          <span>- Giá</span>
-          <span>- TT</span>
-        </li>
-      </ul>
-      <ul class="detail">
-        <li class="detail-li" v-for="(product, index) in selectedInvoice.sanPham" :key="index">
-          <span class="li-span">{{ product.tenSp }}</span> -
-          <span class="li-span">{{ product.sl }}</span> -
-          <span class="li-span">{{ product.dvt }}</span> -
-          <span class="li-span">{{ product.gia }}</span> -
-          <span style="color: red; font-weight: bold">{{ product.thanhtien }}</span>
-        </li>
-      </ul>
-      <p style="font-size: 1.2rem">
-        <strong>Tổng tiền: </strong>
-        <span style="font-weight: 700; color: green">{{ selectedInvoice.tongTien }}</span>
-      </p>
-    </div>
-  </div>
-</template>
-
 <script>
 import { database, ref, get, remove } from '../firebase/config.js'
 import * as XLSX from 'xlsx'
@@ -158,7 +79,7 @@ export default {
     editInvoice(invoice) {
       this.$router.push({
         name: 'edit',
-        query: { id: invoice.id } // Truyền ID hóa đơn qua query params
+        query: { id: invoice.id, date: this.selectedDate } // Truyền ID hóa đơn qua query params
       })
     },
     totalInvoices() {
@@ -272,54 +193,175 @@ export default {
 }
 </script>
 
+<template>
+  <div class="container">
+    <h3>Danh sách hóa đơn</h3>
+
+    <!-- Chọn ngày -->
+    <div class="date-select">
+      <label class="bold" for="select-date">Chọn ngày:&nbsp;</label>
+      <select class="select-date" v-model="selectedDate" @change="fetchInvoices">
+        <option class="select-date-option" v-for="date in availableDates" :key="date" :value="date">
+          {{ date }}
+        </option>
+      </select>
+      <label class="bold float-right" for="total-invoices"
+        >&nbsp;Tổng tiền:
+        <span style="color: green; font-weight: 900">{{ totalInvoices() }}</span></label
+      >
+    </div>
+
+    <!-- Danh sách hóa đơn và spinner -->
+    <div class="invoice-wrap">
+      <div v-if="loading" class="spinner"></div>
+      <div v-else-if="invoices.length > 0">
+        <ul class="span-ul">
+          <li class="span-li" v-for="invoice in paginatedInvoices" :key="invoice.id">
+            <p class="kh-li" @click="viewInvoice(invoice)">{{ invoice.khachHang }}</p>
+            <div>
+              <button class="btn" @click="deleteInvoice(invoice.id)">🗑</button>
+              <button class="btn" @click="editInvoice(invoice)">🖊</button>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Phân trang -->
+        <div class="pagination">
+          <button @click="prevPage" :disabled="currentPage === 1">«</button> &nbsp;
+          <button v-for="page in totalPages" :key="page" @click="changePage(page)">
+            {{ page }}
+          </button>
+          &nbsp;
+          <button @click="nextPage" :disabled="currentPage === totalPages">»</button>
+          <!-- xuất toàn bộ hóa đơn ra file excel -->
+          <button class="btn" @click="exportToExcel" style="float: right">↪</button>
+        </div>
+      </div>
+      <div v-else>
+        <p>Không có hóa đơn nào để hiển thị.</p>
+      </div>
+    </div>
+
+    <!-- Chi tiết hóa đơn -->
+    <div v-if="selectedInvoice">
+      <h3>Chi tiết hóa đơn</h3>
+      <p>
+        <strong class="bold">Khách hàng:</strong> {{ selectedInvoice.khachHang }}
+        <span class="float-right bold" style="color: #2fbd7e"
+          >&nbsp;{{ selectedInvoice.tongTien }}</span
+        >
+        <span class="bold float-right">Thành tiền: </span>
+      </p>
+      <p><strong class="bold">Ngày:</strong> {{ selectedInvoice.ngay }}</p>
+      <ul class="">
+        <li class="detail-li first">
+          <span> Tên SP </span>
+          <span>- SL</span>
+          <span>- ĐVT</span>
+          <span>- Giá</span>
+          <span>- TT</span>
+        </li>
+      </ul>
+      <ul class="bill-detail bold">
+        <li class="detail-li" v-for="(product, index) in selectedInvoice.sanPham" :key="index">
+          <span class="li-span">{{ product.sl }}</span> -
+          <span class="li-span">{{ product.dvt }}</span> -
+          <span class="li-span">{{ product.tenSp }}</span> -
+          <span class="li-span">{{ product.gia }}</span> -
+          <span style="color: red; font-weight: bold">{{ product.thanhtien }}</span>
+        </li>
+      </ul>
+      <span class="bold"> Thu về</span>
+      <ul class="bill-detail">
+        <li class="detail-li" v-for="(product, index) in selectedInvoice.thuVe" :key="index">
+          <span class="li-span">{{ product.sl }}</span> -
+          <span class="li-span">{{ product.dvt }}</span> -
+          <span class="li-span">{{ product.tenSp }}</span> -
+          <span class="li-span">{{ product.gia }}</span> -
+          <span style="color: red; font-weight: bold">{{ product.thanhtien }}</span>
+        </li>
+      </ul>
+      <p style="font-size: 1.2rem">
+        <strong>Tổng tiền: </strong>
+        <span style="font-weight: 700; color: green">{{ selectedInvoice.tongTien }}</span>
+      </p>
+    </div>
+  </div>
+</template>
+
 <style>
-.span-li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  text-decoration: none;
-  margin-bottom: 5px;
-}
-.kh-li {
-  color: green;
-  width: 180px;
-  border: 1px solid green;
-  padding: 5px 10px;
-  border-radius: 4px;
-}
-.detail {
-  padding-left: 15px;
-}
-.li-span {
-  font-weight: bold;
-}
-.note {
-  font-style: italic;
-  color: gray;
-}
-.spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #22a6b3;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  animation: spin 1s linear infinite;
-  margin: 20px auto;
-}
-.date-select {
-  font-size: 1.2rem;
-  border: none;
-  padding: 0.5rem;
-  box-sizing: border-box;
+/* header */
+h3 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 0;
 }
 .select-date {
-  border: none;
-  outline: none;
+  border: #298a5e 2px solid;
+  border-radius: 5px;
+  font-weight: 600;
 }
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+
+/* danh mục hóa đơn */
+.invoice-wrap {
+  margin-top: 16px;
+}
+.span-ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 40px;
+}
+.span-li {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+.span-li div > button {
+  margin-left: 10px;
+}
+.kh-li {
+  width: 150px;
+  cursor: pointer;
+  border: 2px solid #298a5e;
+  color: #298a5e;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: 0.3s all linear;
+  &:hover {
+    color: #fff;
+    background: #298a5e;
+  }
+}
+
+/* Chi tiết hóa đơn */
+.detail-li.first {
+  list-style: none;
+}
+.bold {
+  font-weight: 900;
+}
+.bill-detail {
+  list-style: decimal;
+  padding: 0;
+  margin: 0 40px;
+}
+.float-right {
+  float: right;
+}
+
+/* các button */
+.btn {
+  border: none;
+  border-radius: 5px;
+  background: #2fbd7e;
+  color: #fff;
+  cursor: pointer;
+  padding: 0 15px;
+  font-size: 20px;
+  transition: 0.3s;
+  &:hover {
+    background: #298a5e;
   }
 }
 </style>

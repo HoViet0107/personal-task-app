@@ -1,0 +1,44 @@
+{
+  "khachHang": "Vmart",
+  "ngay": "21/08/2024 15:56",
+  "sanPham": [
+    {
+      "dvt": "Thùng",
+      "gia": 625,
+      "sl": 1,
+      "tenSp": "Gạo trần",
+      "thanhtien": 625
+    },
+    {
+      "dvt": "Thùng",
+      "gia": 484,
+      "sl": 1,
+      "tenSp": "Men thái",
+      "thanhtien": 484
+    },
+    {
+      "dvt": "Gói",
+      "gia": 35,
+      "sl": 20,
+      "tenSp": "Bò miếng",
+      "thanhtien": 700
+    }
+  ],
+  "thuVe": [
+    {
+      "dvt": "Gói",
+      "gia": 35,
+      "sl": 1,
+      "tenSp": "Bò miếng",
+      "thanhtien": 35
+    },
+    {
+      "dvt": "Cái",
+      "gia": 624,
+      "sl": 0.03,
+      "tenSp": "Giảm 3% lấy chỗ đẹp",
+      "thanhtien": 18.72
+    }
+  ],
+  "tongTien": 1755.28
+}

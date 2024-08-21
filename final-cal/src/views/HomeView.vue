@@ -1,16 +1,19 @@
 <script>
 // Import các thư viện Firebase cần thiết
+// import AddSp from '@/components/popup/AddSp.vue'
 import { database, ref, set, get } from '../firebase/config.js'
 
 export default {
+  components: {},
   data() {
     return {
-      productData: [{ khachHang: '', tenSp: '', sl: 0, gia: 0, thanhtien: 0, dvt: '' }],
+      // productData: [{ tenSp: '', sl: null, gia: null, thanhtien: null, dvt: '' }],
+      productData: [],
+      returnProductData: [],
+      goods: [],
+      dvt: [],
       khachHang: '',
       tongTien: 0,
-      number1: 0, // Số thứ nhất cho phép toán
-      number2: 0, // Số thứ hai cho phép toán
-      operation: '', // Phép toán hiện tại
       result: null, // Kết quả của phép toán
       totalAmount: 0 // Khởi tạo giá trị cho totalAmount
     }
@@ -21,9 +24,21 @@ export default {
       this.productData.push({
         khachHang: '',
         tenSp: '',
-        sl: 0,
-        gia: 0,
-        thanhtien: 0,
+        sl: null,
+        gia: null,
+        thanhtien: null,
+        dvt: ''
+      })
+
+      console.log(this.productData)
+    },
+    addReturnProduct() {
+      this.returnProductData.push({
+        khachHang: '',
+        tenSp: '',
+        sl: null,
+        gia: null,
+        thanhtien: null,
         dvt: ''
       })
     },
@@ -34,7 +49,9 @@ export default {
     },
     // Cập nhật tổng tiền hóa đơn
     updateTotalAmount() {
-      this.tongTien = this.productData.reduce((sum, product) => sum + product.thanhtien, 0)
+      this.tongTien =
+        this.productData.reduce((sum, product) => sum + product.thanhtien, 0) -
+        this.returnProductData.reduce((sum, product) => sum + product.thanhtien, 0)
     },
     // Kiểm tra tính hợp lệ của dữ liệu
     validateData() {
@@ -42,36 +59,68 @@ export default {
         alert('Vui lòng nhập tên khách hàng.')
         return false
       }
-      for (const product of this.productData) {
-        if (!product.tenSp.trim() || product.sl <= 0 || product.gia <= 0 || !product.dvt.trim()) {
-          alert('Vui lòng nhập đầy đủ thông tin sản phẩm hợp lệ.')
-          return false
+      if (this.productData.length === 0 && this.returnProductData.length === 0) {
+        console.log('asas')
+
+        alert('Vui lòng nhập đầy đủ thông tin sản phẩm bán ra hợp lệ.')
+        return false
+      }
+      // Kiểm tra sản phẩm bán ra nếu có
+      if (this.productData) {
+        for (const product of this.productData) {
+          if (!product.tenSp.trim() || product.sl <= 0 || product.gia <= 0 || !product.dvt.trim()) {
+            alert('Vui lòng nhập đầy đủ thông tin sản phẩm bán ra hợp lệ.')
+            return false
+          }
         }
       }
+
+      // Kiểm tra sản phẩm thu về nếu có
+      if (this.returnProductData) {
+        for (const product of this.returnProductData) {
+          if (!product.tenSp.trim() || product.sl <= 0 || product.gia <= 0 || !product.dvt.trim()) {
+            alert('Vui lòng nhập đầy đủ thông tin sản phẩm thu về hợp lệ.')
+            return false
+          }
+        }
+      }
+
       return true
-    },
-    // Lấy thời gian hiện tại định dạng DD/MM/YYYY HH:MM
-    getCurrentDateTime() {
-      const now = new Date()
-      return `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
     },
     // Lưu dữ liệu sản phẩm vào LocalStorage
     saveProductDataToLocalStorage() {
       const dataToSave = {
         productData: this.productData,
+        returnProductData: this.returnProductData,
         khachHang: this.khachHang,
         tongTien: this.tongTien
       }
-      localStorage.setItem('productData', JSON.stringify(dataToSave))
+      localStorage.setItem('bills', JSON.stringify(dataToSave))
     },
     // Tải dữ liệu sản phẩm từ LocalStorage
     loadProductDataFromLocalStorage() {
-      const savedData = JSON.parse(localStorage.getItem('productData'))
+      const savedData = JSON.parse(localStorage.getItem('bills'))
       if (savedData) {
         this.productData = savedData.productData || this.productData
+        this.returnProductData = savedData.returnProductData || this.returnProductData
         this.khachHang = savedData.khachHang || this.khachHang
         this.tongTien = savedData.tongTien || this.tongTien
       }
+    },
+    //loại bỏ sản phẩm khỏi hóa đơn
+    removeProduct(index, type) {
+      if (type === 'product') {
+        this.productData.splice(index, 1)
+      } else {
+        this.returnProductData.splice(index, 1)
+      }
+      this.updateTotalAmount()
+    },
+
+    // Lấy thời gian hiện tại định dạng DD/MM/YYYY HH:MM
+    getCurrentDateTime() {
+      const now = new Date()
+      return `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
     },
     // Xuất dữ liệu hóa đơn và lưu vào Firebase
     exportToJSON() {
@@ -83,6 +132,13 @@ export default {
           sl: product.sl,
           thanhtien: product.thanhtien,
           tenSp: product.tenSp
+        }))
+        const thuveData = this.returnProductData.map((re_product) => ({
+          dvt: re_product.dvt,
+          gia: re_product.gia,
+          sl: re_product.sl,
+          thanhtien: re_product.thanhtien,
+          tenSp: re_product.tenSp
         }))
 
         const dataRef = ref(database, 'hoadon/' + ngay)
@@ -113,6 +169,18 @@ export default {
                 }
               })
 
+              thuveData.forEach((newProduct) => {
+                const existingProduct = existingData.thuVe.find(
+                  (prod) => prod.tenSp === newProduct.tenSp && prod.dvt === newProduct.dvt
+                )
+                if (existingProduct) {
+                  existingProduct.sl += newProduct.sl
+                  existingProduct.thanhtien += newProduct.thanhtien
+                } else {
+                  existingData.thuVe.push(newProduct)
+                }
+              })
+
               existingData.tongTien += this.tongTien
 
               const updateRef = ref(database, `hoadon/${ngay}/${currentIndex}`)
@@ -128,6 +196,7 @@ export default {
                 khachHang: this.khachHang,
                 ngay: this.getCurrentDateTime(),
                 sanPham: sanPhamData,
+                thuVe: thuveData,
                 tongTien: this.tongTien
               }
 
@@ -144,16 +213,38 @@ export default {
     },
     // Xóa tất cả dữ liệu
     clearAll() {
-      this.productData = [{ khachHang: '', tenSp: '', sl: 0, gia: 0, thanhtien: 0, dvt: '' }]
+      this.productData = []
+      this.returnProductData = []
       this.khachHang = ''
       this.tongTien = 0
-      localStorage.removeItem('productData')
+      localStorage.removeItem('bills')
+    },
+    // load các đơn vị tính
+    fetchDVT() {
+      const dataRef = ref(database, 'dvt')
+
+      get(dataRef).then((snapshot) => {
+        const options = []
+        const data = snapshot.val()
+        if (data) {
+          Object.entries(data).forEach(([key, value]) => {
+            options.push({ key, value })
+          })
+        }
+        this.dvt = options
+      })
+      console.log(this.dvt)
     }
-    // Tính toán dựa trên phép toán được chọn
   },
   watch: {
     // Lưu dữ liệu vào localStorage khi productData thay đổi
     productData: {
+      handler() {
+        this.saveProductDataToLocalStorage()
+      },
+      deep: true
+    },
+    returnProductData: {
       handler() {
         this.saveProductDataToLocalStorage()
       },
@@ -169,6 +260,7 @@ export default {
   created() {
     // Load dữ liệu từ localStorage khi component được tạo
     this.loadProductDataFromLocalStorage()
+    this.fetchDVT()
   }
 }
 </script>
@@ -193,31 +285,43 @@ export default {
         <td scope="col" class="table-header val-thanh_tien">TT</td>
         <td scope="col" class="table-header val-hanh_dong"></td>
       </tr>
-      <tr>
-        <td scope="col">1</td>
+      <tr v-for="(product, index) in productData" :key="index">
+        <td scope="col">{{ index + 1 }}</td>
         <td scope="value" class="val-sl">
-          <input type="number" class="sl-input" />
+          <input
+            type="number"
+            v-model="product.sl"
+            class="sl-input"
+            @input="calculateTotal(product)"
+          />
         </td>
         <td scope="value" class="val-dvt dvt-style">
-          <select class="dvt-input">
-            <option value="Thùng">T</option>
-            <option value="Gói">G</option>
-            <option value="Hộp">H</option>
-            <option value="Cái">C</option>
-            <option value="Bịch">B</option>
-            <option value="Chai">Ch</option>
+          <select class="dvt-input" v-model="product.dvt">
+            <option value="">---</option>
+            <option v-for="(option, index) in dvt" :key="index" :value="option.value">
+              {{ option.key }}
+            </option>
           </select>
         </td>
         <td scope="value">
-          <input type="text" class="ten_sp-input" />
+          <input type="text" v-model="product.tenSp" class="ten_sp-input" />
         </td>
         <td scope="value" class="val-gia_sp">
-          <input type="number" class="gia-input" />
+          <input
+            type="number"
+            class="gia-input"
+            v-model="product.gia"
+            @input="calculateTotal(product)"
+          />
         </td>
-        <td scope="col" class="val-thanh_tien thanh_tien_style">40569</td>
-        <td class="val-hanh_dong"><p>⌫</p></td>
+        <td scope="col" class="val-thanh_tien thanh_tien_style">
+          <input class="thanh_tien-input" :value="product.thanhtien" readonly />
+        </td>
+        <td class="val-hanh_dong" @click="removeProduct(index, 'product')"><p>⌫</p></td>
       </tr>
     </table>
+    <!-- thêm sp vào hóa đơn -->
+    <button class="btn" style="margin-top: 10px" @click="addProduct">+</button>
 
     <!-- bảng thu về -->
     <table class="table">
@@ -233,38 +337,54 @@ export default {
         <td scope="col" class="table-header val-thanh_tien">TT</td>
         <td scope="col" class="table-header val-hanh_dong"></td>
       </tr>
-      <tr>
-        <td scope="col">1</td>
+      <tr v-for="(product, index) in returnProductData" :key="index">
+        <td scope="col">{{ index + 1 }}</td>
         <td scope="value" class="val-sl">
-          <input type="number" class="sl-input" />
+          <input
+            type="number"
+            v-model="product.sl"
+            class="sl-input"
+            @input="calculateTotal(product)"
+          />
         </td>
         <td scope="value" class="val-dvt dvt-style">
-          <select class="dvt-input">
-            <option value="Thùng">T</option>
-            <option value="Gói">G</option>
-            <option value="Hộp">H</option>
-            <option value="Cái">C</option>
-            <option value="Bịch">B</option>
-            <option value="Chai">Ch</option>
+          <select class="dvt-input" v-model="product.dvt">
+            <option value="">---</option>
+            <option v-for="(option, index) in dvt" :key="index" :value="option.value">
+              {{ option.key }}
+            </option>
           </select>
         </td>
         <td scope="value">
-          <input type="text" class="ten_sp-input" />
+          <input type="text" v-model="product.tenSp" class="ten_sp-input" />
         </td>
         <td scope="value" class="val-gia_sp">
-          <input type="number" class="gia-input" />
+          <input
+            type="number"
+            class="gia-input"
+            v-model="product.gia"
+            @input="calculateTotal(product)"
+          />
         </td>
-        <td scope="col" class="val-thanh_tien thanh_tien_style">40569</td>
-        <td class="val-hanh_dong"><p>⌫</p></td>
+        <td scope="col" class="val-thanh_tien thanh_tien_style">
+          <input class="thanh_tien-input" :value="product.thanhtien" readonly />
+        </td>
+        <td class="val-hanh_dong" @click="removeProduct(index, 'return_product')"><p>⌫</p></td>
       </tr>
     </table>
+    <!-- thêm sp thu về -->
+    <button class="btn" style="margin-top: 10px" @click="addReturnProduct">+</button>
+
     <!-- tổng tiền -->
-    <p class="tong-tien">Tổng tiền <span>100000</span></p>
+    <p class="tong-tien">
+      Tổng tiền: <span>{{ tongTien }}</span>
+    </p>
     <!-- các nút xử lý -->
     <div class="btn-wrap">
-      <button class="btn">🔄</button>
-      <button class="btn">➕</button>
-      <button class="btn">⤴️</button>
+      <button class="btn" @click="clearAll">↺</button>
+      <!-- Popup thêm sản phẩm/ để đây để thêm sản phẩm vào danh mục
+      <AddSp @product-added="addProductToList" /> -->
+      <button class="btn" @click="exportToJSON">↪</button>
     </div>
   </div>
 </template>
@@ -281,7 +401,7 @@ header {
   margin-bottom: 20px;
   display: flex;
   margin-top: 10px;
-  font-size: 1.1rem;
+  font-size: 16px;
   margin-left: 10px;
 }
 .khach-hang > p {
@@ -290,7 +410,7 @@ header {
 .khach-hang > input {
   width: 100%;
   outline: none;
-  font-size: 1.1;
+  font-size: 16px;
   border-radius: 5px;
   border: 1px grey solid;
   margin-right: 8px;
@@ -318,6 +438,7 @@ td[scope='value'] {
   width: 23px !important;
 }
 /* loại bỏ style input */
+.thanh_tien-input,
 .ten_sp-input,
 .dvt-input,
 .gia-input,
@@ -327,6 +448,9 @@ td[scope='value'] {
   border: none;
   width: 100%;
 }
+.thanh_tien-input {
+  background: transparent;
+}
 /* cột giá */
 .val-gia_sp,
 .val-gia_sp > input {
@@ -334,6 +458,7 @@ td[scope='value'] {
   width: 40px !important;
 }
 /* cột thành tiền */
+.val-thanh_tien .thanh_tien-input,
 .val-thanh_tien {
   text-align: center;
   width: 50px !important;
@@ -379,18 +504,26 @@ input[type='number']::-webkit-inner-spin-button {
 }
 /* các nút */
 .btn {
-  border: 0.5px solid #00bd7e;
+  border: none;
   border-radius: 5px;
-  background: #fff;
+  background: #2fbd7e;
+  color: #fff;
   cursor: pointer;
-  padding: 5px 15px;
-  rotate: 180deg;
-  margin-top: 1.5rem;
+  padding: 0 15px;
   margin-left: 1rem;
+  font-size: 20px;
+  z-index: 0;
+  transition: 0.3s;
+  &:hover {
+    background: #298a5e;
+  }
 }
 .btn-wrap {
-  margin-top: 1rem;
+  margin-top: 3rem;
+  margin-right: 1rem;
   position: absolute;
   right: 10px;
+  display: flex;
+  gap: 10px;
 }
 </style>
