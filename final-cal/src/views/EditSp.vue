@@ -13,7 +13,7 @@
     <table>
       <thead>
         <tr>
-          <th>STT</th>
+          <th>.</th>
           <th>Tên SP</th>
           <th>ĐVT</th>
           <th style="width: 35px !important">SL</th>
@@ -34,13 +34,67 @@
             />
           </td>
           <td>
-            <select v-model="product.dvt" class="tb-input">
-              <option value="Thùng">T</option>
-              <option value="Gói">G</option>
-              <option value="Hộp">H</option>
-              <option value="Cái">C</option>
-              <option value="Bịch">B</option>
-            </select>
+            <input
+              v-model.number="product.dvt"
+              type="text"
+              style="width: 50px !important"
+              class="tb-input small-input"
+            />
+          </td>
+          <td>
+            <input
+              v-model.number="product.sl"
+              type="number"
+              style="width: 35px !important"
+              @input="calculateTotal(product)"
+              class="tb-input small-input"
+            />
+          </td>
+          <td>
+            <input
+              style="width: 50px !important"
+              v-model.number="product.gia"
+              type="number"
+              @input="calculateTotal(product)"
+              class="tb-input small-input"
+            />
+          </td>
+          <td>
+            <input
+              style="width: 55px !important"
+              v-model.number="product.thanhtien"
+              type="number"
+              readonly
+              class="tb-input small-input"
+            />
+          </td>
+          <td><button @click="removeProduct(index)" class="action-button">Xóa</button></td>
+        </tr>
+      </tbody>
+      <!-- thu về -->
+      <thead>
+        <tr style="width: 100px">
+          Thu về
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(product, index) in editingInvoice.thuVe" :key="index">
+          <td>{{ index + 1 }}</td>
+          <td>
+            <input
+              style="width: 140px !important"
+              v-model="product.tenSp"
+              placeholder="Tên sản phẩm"
+              class="tb-input"
+            />
+          </td>
+          <td>
+            <input
+              v-model.number="product.dvt"
+              type="text"
+              style="width: 50px !important"
+              class="tb-input small-input"
+            />
           </td>
           <td>
             <input
@@ -144,10 +198,9 @@ export default {
       })
     },
     updateTotalAmount() {
-      this.editingInvoice.tongTien = this.editingInvoice.sanPham.reduce(
-        (sum, product) => sum + product.thanhtien,
-        0
-      )
+      this.editingInvoice.tongTien =
+        this.editingInvoice.sanPham.reduce((sum, product) => sum + product.thanhtien, 0) -
+        this.editingInvoice.thuVe.reduce((sum, product) => sum + product.thanhtien, 0)
     },
     calculateTotal(product) {
       product.thanhtien = product.sl * product.gia

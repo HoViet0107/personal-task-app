@@ -15,7 +15,8 @@ export default {
       khachHang: '',
       tongTien: 0,
       result: null, // Kết quả của phép toán
-      totalAmount: 0 // Khởi tạo giá trị cho totalAmount
+      totalAmount: 0, // Khởi tạo giá trị cho totalAmount
+      showSuggestions: false
     }
   },
   methods: {
@@ -43,8 +44,20 @@ export default {
       })
     },
     // Tính toán thành tiền của từng sản phẩm
+
+    /* đang dừng ở đoạn xử lý tính giá sp
+      còn mấy sản phẩm tính thúng
+      xử lý khi chọn đơn vị tính là thùng hay là gói nữa
+      nhiều bỏ mẹ
+    */
+
     calculateTotal(product) {
-      product.thanhtien = product.sl * product.gia
+      if (product.dvt === 'Thùng' || product.dvt === 'Dây') {
+        product.thanhtien = product.sl * product.tong_sl * product.gia
+      } else {
+        // nếu dvt không phải thùng thì tính lẻ từng cái
+        product.thanhtien = product.sl * 1 * product.gia
+      }
       this.updateTotalAmount() // Cập nhật tổng tiền sau khi tính
     },
     // Cập nhật tổng tiền hóa đơn
@@ -234,6 +247,71 @@ export default {
         this.dvt = options
       })
       console.log(this.dvt)
+    },
+    // load mục tìm kiếm sản phẩm
+    fetchProductSuggestions(query) {
+      const dbRef = ref(database, 'goods')
+      console.log('outer: ', query)
+
+      // Nếu không có ký tự nào hoặc ký tự quá ngắn, xóa hết gợi ý
+      if (!query || query.trim().length === 0) {
+        console.log('Empty query')
+        this.showSuggestions = false
+        this.suggestions = []
+        return
+      }
+
+      get(dbRef)
+        .then((snapshot) => {
+          // console.log('inner', query)
+          const products = snapshot.val()
+          this.showSuggestions = true
+          if (products) {
+            // Lọc các sản phẩm chứa từ khóa trong tenSp
+            this.suggestions = Object.values(products).filter((product) => {
+              return product.tenSp.toLowerCase().includes(query.toLowerCase())
+            })
+            console.log(this.suggestions)
+
+            // Nếu không tìm thấy sản phẩm nào phù hợp, xóa gợi ý
+            if (this.suggestions.length === 0) {
+              this.suggestions = []
+            }
+          } else {
+            this.suggestions = []
+            this.showSuggestions = false
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching product suggestions:', error)
+          this.suggestions = [] // Nếu có lỗi, cũng xóa gợi ý
+          this.showSuggestions = false
+        })
+
+      console.log(this.suggestions)
+    },
+    handleProductSelect(product, index, type) {
+      // Gán các giá trị của sản phẩm đã chọn vào productData tương ứng với index
+      if (type === 'product') {
+        this.productData[index].tenSp = product.tenSp
+        this.productData[index].gia = product.gia
+        this.productData[index].dvt = product.dvt
+        this.productData[index].tong_sl = product.tong_sl
+
+        // Tính toán thành tiền khi đã có giá và số lượng
+        this.calculateTotal(this.productData[index])
+      } else {
+        this.returnProductData[index].tenSp = product.tenSp
+        this.returnProductData[index].gia = product.gia
+        this.returnProductData[index].dvt = product.dvt
+        this.returnProductData[index].tong_sl = product.tong_sl
+
+        // Tính toán thành tiền khi đã có giá và số lượng
+        this.calculateTotal(this.returnProductData[index])
+      }
+
+      this.showSuggestions = false // Ẩn danh sách gợi ý sau khi chọn
+      console.log(this.productData[index])
     }
   },
   watch: {
@@ -296,15 +374,25 @@ export default {
           />
         </td>
         <td scope="value" class="val-dvt dvt-style">
-          <select class="dvt-input" v-model="product.dvt">
-            <option value="">---</option>
-            <option v-for="(option, index) in dvt" :key="index" :value="option.value">
-              {{ option.key }}
-            </option>
-          </select>
+          <input type="text" v-model="product.dvt" class="dvt-input" />
         </td>
         <td scope="value">
-          <input type="text" v-model="product.tenSp" class="ten_sp-input" />
+          <input
+            type="text"
+            v-model="product.tenSp"
+            class="ten_sp-input"
+            @input="fetchProductSuggestions(product.tenSp)"
+          />
+          <!-- Gợi ý sản phẩm -->
+          <ul v-if="showSuggestions" class="suggestions-list">
+            <li
+              v-for="(suggestion, sIndex) in suggestions"
+              :key="sIndex"
+              @click="handleProductSelect(suggestion, index)"
+            >
+              {{ suggestion.tenSp }}
+            </li>
+          </ul>
         </td>
         <td scope="value" class="val-gia_sp">
           <input
@@ -348,15 +436,25 @@ export default {
           />
         </td>
         <td scope="value" class="val-dvt dvt-style">
-          <select class="dvt-input" v-model="product.dvt">
-            <option value="">---</option>
-            <option v-for="(option, index) in dvt" :key="index" :value="option.value">
-              {{ option.key }}
-            </option>
-          </select>
+          <input type="text" v-model="product.dvt" class="dvt-input" />
         </td>
         <td scope="value">
-          <input type="text" v-model="product.tenSp" class="ten_sp-input" />
+          <input
+            type="text"
+            v-model="product.tenSp"
+            class="ten_sp-input"
+            @input="fetchProductSuggestions(product.tenSp)"
+          />
+          <!-- Gợi ý sản phẩm -->
+          <ul v-if="showSuggestions" class="suggestions-list">
+            <li
+              v-for="(suggestion, sIndex) in suggestions"
+              :key="sIndex"
+              @click="handleProductSelect(suggestion, index)"
+            >
+              {{ suggestion.tenSp }}
+            </li>
+          </ul>
         </td>
         <td scope="value" class="val-gia_sp">
           <input
@@ -430,6 +528,27 @@ td[scope='col'] {
 td[scope='value'] {
   border: 0.5px solid gainsboro;
   align-items: center !important;
+}
+/* cột tên sản phẩm, xử lý form gợi ý tìm kiếm */
+.suggestions-list {
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  position: absolute;
+  background-color: white;
+  z-index: 1000;
+  width: 150px;
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.suggestions-list li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestions-list li:hover {
+  background-color: #f0f0f0;
 }
 /* cột số lượng sp */
 .val-sl,

@@ -255,29 +255,33 @@ export default {
       <p><strong class="bold">Ngày:</strong> {{ selectedInvoice.ngay }}</p>
       <ul class="">
         <li class="detail-li first">
-          <span> Tên SP </span>
-          <span>- SL</span>
-          <span>- ĐVT</span>
-          <span>- Giá</span>
+          <span>SL</span>
+          <span>·ĐVT</span>
+          <span>- Tên SP </span>
+          <span>x Giá</span>
           <span>- TT</span>
         </li>
       </ul>
       <ul class="bill-detail bold">
         <li class="detail-li" v-for="(product, index) in selectedInvoice.sanPham" :key="index">
-          <span class="li-span">{{ product.sl }}</span> -
+          <span class="li-span"
+            >{{ product.sl }}<span style="font-size: 20px; font-weight: 900">·</span></span
+          >
           <span class="li-span">{{ product.dvt }}</span> -
-          <span class="li-span">{{ product.tenSp }}</span> -
-          <span class="li-span">{{ product.gia }}</span> -
+          <span class="li-span">{{ product.tenSp }}</span> x
+          <span class="li-span">{{ product.gia }}</span> =
           <span style="color: red; font-weight: bold">{{ product.thanhtien }}</span>
         </li>
       </ul>
       <span class="bold"> Thu về</span>
       <ul class="bill-detail">
         <li class="detail-li" v-for="(product, index) in selectedInvoice.thuVe" :key="index">
-          <span class="li-span">{{ product.sl }}</span> -
+          <span class="li-span"
+            >{{ product.sl }}<span style="font-size: 20px; font-weight: 900">·</span></span
+          >
           <span class="li-span">{{ product.dvt }}</span> -
-          <span class="li-span">{{ product.tenSp }}</span> -
-          <span class="li-span">{{ product.gia }}</span> -
+          <span class="li-span">{{ product.tenSp }}</span> x
+          <span class="li-span">{{ product.gia }}</span> =
           <span style="color: red; font-weight: bold">{{ product.thanhtien }}</span>
         </li>
       </ul>
