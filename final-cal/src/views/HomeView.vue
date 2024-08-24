@@ -14,9 +14,11 @@ export default {
       dvt: [],
       khachHang: '',
       tongTien: 0,
-      result: null, // Kết quả của phép toán
-      totalAmount: 0, // Khởi tạo giá trị cho totalAmount
-      showSuggestions: false
+      totalAmount: 0, // tổng tiền hóa đơn
+      showSuggestions: false,
+      reShowSuggestions: false,
+      forcusIdx: null,
+      re_forcusIdx: null
     }
   },
   methods: {
@@ -30,8 +32,6 @@ export default {
         thanhtien: null,
         dvt: ''
       })
-
-      console.log(this.productData)
     },
     addReturnProduct() {
       this.returnProductData.push({
@@ -44,15 +44,8 @@ export default {
       })
     },
     // Tính toán thành tiền của từng sản phẩm
-
-    /* đang dừng ở đoạn xử lý tính giá sp
-      còn mấy sản phẩm tính thúng
-      xử lý khi chọn đơn vị tính là thùng hay là gói nữa
-      nhiều bỏ mẹ
-    */
-
     calculateTotal(product) {
-      if (product.dvt === 'Thùng' || product.dvt === 'Dây') {
+      if (product.dvt.toLowerCase() === 'thùng' || product.dvt.toLowerCase === 'dây') {
         product.thanhtien = product.sl * product.tong_sl * product.gia
       } else {
         // nếu dvt không phải thùng thì tính lẻ từng cái
@@ -246,17 +239,24 @@ export default {
         }
         this.dvt = options
       })
-      console.log(this.dvt)
     },
     // load mục tìm kiếm sản phẩm
-    fetchProductSuggestions(query) {
+    fetchProductSuggestions(query, index, type) {
+      // gán chỉ mục hiện tại của bảng
+      if (type === 'product') this.forcusIdx = index
+      else this.re_forcusIdx = index
+
       const dbRef = ref(database, 'goods')
-      console.log('outer: ', query)
 
       // Nếu không có ký tự nào hoặc ký tự quá ngắn, xóa hết gợi ý
       if (!query || query.trim().length === 0) {
         console.log('Empty query')
-        this.showSuggestions = false
+        if (type === 'product') {
+          this.showSuggestions = false
+        }
+        if (type === 're_data') {
+          this.reShowSuggestions = false
+        }
         this.suggestions = []
         return
       }
@@ -265,13 +265,17 @@ export default {
         .then((snapshot) => {
           // console.log('inner', query)
           const products = snapshot.val()
-          this.showSuggestions = true
+          if (type === 'product') {
+            this.showSuggestions = true
+          }
+          if (type === 're_data') {
+            this.reShowSuggestions = true
+          }
           if (products) {
             // Lọc các sản phẩm chứa từ khóa trong tenSp
             this.suggestions = Object.values(products).filter((product) => {
               return product.tenSp.toLowerCase().includes(query.toLowerCase())
             })
-            console.log(this.suggestions)
 
             // Nếu không tìm thấy sản phẩm nào phù hợp, xóa gợi ý
             if (this.suggestions.length === 0) {
@@ -279,39 +283,78 @@ export default {
             }
           } else {
             this.suggestions = []
-            this.showSuggestions = false
+            if (type === 'product') {
+              this.showSuggestions = false
+            }
+            if (type === 're_data') {
+              this.reShowSuggestions = false
+            }
           }
         })
         .catch((error) => {
           console.error('Error fetching product suggestions:', error)
           this.suggestions = [] // Nếu có lỗi, cũng xóa gợi ý
-          this.showSuggestions = false
+          if (type === 'product') {
+            this.showSuggestions = false
+          }
+          if (type === 're_data') {
+            this.reShowSuggestions = false
+          }
         })
-
-      console.log(this.suggestions)
     },
     handleProductSelect(product, index, type) {
-      // Gán các giá trị của sản phẩm đã chọn vào productData tương ứng với index
+      let isExist = false
+      let idx = null
+      // check nếu sp được thêm đã tồn tại trong dữ liệu trước đó
       if (type === 'product') {
-        this.productData[index].tenSp = product.tenSp
-        this.productData[index].gia = product.gia
-        this.productData[index].dvt = product.dvt
-        this.productData[index].tong_sl = product.tong_sl
-
-        // Tính toán thành tiền khi đã có giá và số lượng
-        this.calculateTotal(this.productData[index])
+        this.productData.forEach((item, itemIdx) => {
+          if (product.tenSp === item.tenSp) {
+            alert('Sản phẩm đã tồn tại!')
+            this.showSuggestions = false
+            isExist = true
+          } else {
+            idx = itemIdx
+          }
+        })
       } else {
-        this.returnProductData[index].tenSp = product.tenSp
-        this.returnProductData[index].gia = product.gia
-        this.returnProductData[index].dvt = product.dvt
-        this.returnProductData[index].tong_sl = product.tong_sl
-
-        // Tính toán thành tiền khi đã có giá và số lượng
-        this.calculateTotal(this.returnProductData[index])
+        this.returnProductData.forEach((item, itemIdx) => {
+          if (product.tenSp === item.tenSp) {
+            alert('Sản phẩm thu về đã tồn tại!')
+            this.showSuggestions = false
+            isExist = true
+          } else {
+            idx = itemIdx
+          }
+        })
       }
 
-      this.showSuggestions = false // Ẩn danh sách gợi ý sau khi chọn
-      console.log(this.productData[index])
+      if (isExist) {
+        return
+      }
+      // nếu chưa tồn tại sp đó thì gán giá trị
+      if (type === 'product') {
+        this.productData[idx].tenSp = product.tenSp
+        this.productData[idx].gia = product.gia
+        this.productData[idx].tong_sl = product.tong_sl
+        this.productData[idx].dvt = product.dvt
+
+        this.calculateTotal(this.productData[idx])
+      } else {
+        this.returnProductData[idx].tenSp = product.tenSp
+        this.returnProductData[idx].gia = product.gia
+        this.returnProductData[idx].tong_sl = product.tong_sl
+        this.returnProductData[idx].dvt = product.dvt
+
+        this.calculateTotal(this.returnProductData[idx])
+      }
+
+      // Ẩn danh sách gợi ý sau khi chọn
+      if (type === 'product') {
+        this.showSuggestions = false
+      }
+      if (type === 're_data') {
+        this.reShowSuggestions = false
+      }
     }
   },
   watch: {
@@ -365,6 +408,7 @@ export default {
       </tr>
       <tr v-for="(product, index) in productData" :key="index">
         <td scope="col">{{ index + 1 }}</td>
+        <!-- sl -->
         <td scope="value" class="val-sl">
           <input
             type="number"
@@ -373,27 +417,35 @@ export default {
             @input="calculateTotal(product)"
           />
         </td>
+        <!-- dvt -->
         <td scope="value" class="val-dvt dvt-style">
-          <input type="text" v-model="product.dvt" class="dvt-input" />
+          <input
+            type="text"
+            v-model="product.dvt"
+            class="dvt-input"
+            @input="calculateTotal(product)"
+          />
         </td>
+        <!-- tên sp -->
         <td scope="value">
           <input
             type="text"
             v-model="product.tenSp"
             class="ten_sp-input"
-            @input="fetchProductSuggestions(product.tenSp)"
+            @input="fetchProductSuggestions(product.tenSp, index, 'product')"
           />
           <!-- Gợi ý sản phẩm -->
-          <ul v-if="showSuggestions" class="suggestions-list">
+          <ul v-if="showSuggestions && index === forcusIdx" class="suggestions-list">
             <li
               v-for="(suggestion, sIndex) in suggestions"
               :key="sIndex"
-              @click="handleProductSelect(suggestion, index)"
+              @click="handleProductSelect(suggestion, index, 'product')"
             >
               {{ suggestion.tenSp }}
             </li>
           </ul>
         </td>
+        <!-- giá -->
         <td scope="value" class="val-gia_sp">
           <input
             type="number"
@@ -402,6 +454,7 @@ export default {
             @input="calculateTotal(product)"
           />
         </td>
+        <!-- thành tiền -->
         <td scope="col" class="val-thanh_tien thanh_tien_style">
           <input class="thanh_tien-input" :value="product.thanhtien" readonly />
         </td>
@@ -410,6 +463,7 @@ export default {
     </table>
     <!-- thêm sp vào hóa đơn -->
     <button class="btn" style="margin-top: 10px" @click="addProduct">+</button>
+    <!-- ------------------------------------------------------------ -->
 
     <!-- bảng thu về -->
     <table class="table">
@@ -427,6 +481,7 @@ export default {
       </tr>
       <tr v-for="(product, index) in returnProductData" :key="index">
         <td scope="col">{{ index + 1 }}</td>
+        <!-- sl -->
         <td scope="value" class="val-sl">
           <input
             type="number"
@@ -435,27 +490,35 @@ export default {
             @input="calculateTotal(product)"
           />
         </td>
+        <!-- dvt -->
         <td scope="value" class="val-dvt dvt-style">
-          <input type="text" v-model="product.dvt" class="dvt-input" />
+          <input
+            type="text"
+            v-model="product.dvt"
+            class="dvt-input"
+            @input="calculateTotal(product)"
+          />
         </td>
+        <!-- tên sp -->
         <td scope="value">
           <input
             type="text"
             v-model="product.tenSp"
             class="ten_sp-input"
-            @input="fetchProductSuggestions(product.tenSp)"
+            @input="fetchProductSuggestions(product.tenSp, index, 're_data')"
           />
           <!-- Gợi ý sản phẩm -->
-          <ul v-if="showSuggestions" class="suggestions-list">
+          <ul v-if="reShowSuggestions && index === re_forcusIdx" class="suggestions-list">
             <li
               v-for="(suggestion, sIndex) in suggestions"
               :key="sIndex"
-              @click="handleProductSelect(suggestion, index)"
+              @click="handleProductSelect(suggestion, index, 're_data')"
             >
               {{ suggestion.tenSp }}
             </li>
           </ul>
         </td>
+        <!-- giá -->
         <td scope="value" class="val-gia_sp">
           <input
             type="number"
@@ -464,12 +527,14 @@ export default {
             @input="calculateTotal(product)"
           />
         </td>
+        <!-- thành tiền -->
         <td scope="col" class="val-thanh_tien thanh_tien_style">
           <input class="thanh_tien-input" :value="product.thanhtien" readonly />
         </td>
         <td class="val-hanh_dong" @click="removeProduct(index, 'return_product')"><p>⌫</p></td>
       </tr>
     </table>
+
     <!-- thêm sp thu về -->
     <button class="btn" style="margin-top: 10px" @click="addReturnProduct">+</button>
 
@@ -541,15 +606,14 @@ td[scope='value'] {
   list-style-type: none;
   padding-left: 0;
 }
-
 .suggestions-list li {
   padding: 10px;
   cursor: pointer;
 }
-
 .suggestions-list li:hover {
   background-color: #f0f0f0;
 }
+
 /* cột số lượng sp */
 .val-sl,
 .val-sl > input {
@@ -581,10 +645,12 @@ td[scope='value'] {
 .val-thanh_tien {
   text-align: center;
   width: 50px !important;
+  cursor: pointer;
 }
 .thanh_tien_style {
   color: green;
   font-weight: bold;
+  position: relative;
 }
 
 /* cột đơn vị tính */
@@ -621,6 +687,22 @@ input[type='number']::-webkit-inner-spin-button {
   color: #00bd7e;
   font-weight: bold;
 }
+/* hiển thị chi tiết sản phẩm */
+.product-details {
+  position: absolute;
+  left: 0; /* Đặt vị trí bên trái của `input` */
+  bottom: 30px; /* Đặt vị trí phía trên của `input` */
+  transform: translateX(-100%) !important; /* Đẩy phần chi tiết sang bên trái */
+  transform: translateY(-100%); /* Đẩy phần chi tiết lên trên */
+  width: max-content;
+  height: fit-content;
+  background-color: white;
+  border: 1px solid #00bd7e;
+  border-radius: 5px;
+  padding: 5px;
+  z-index: 1000;
+}
+
 /* các nút */
 .btn {
   border: none;

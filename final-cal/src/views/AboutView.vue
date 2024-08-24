@@ -220,7 +220,7 @@ export default {
             <p class="kh-li" @click="viewInvoice(invoice)">{{ invoice.khachHang }}</p>
             <div>
               <button class="btn" @click="deleteInvoice(invoice.id)">🗑</button>
-              <button class="btn" @click="editInvoice(invoice)">🖊</button>
+              <button class="btn" @click="editInvoice(invoice)">✎</button>
             </div>
           </li>
         </ul>

@@ -115,7 +115,7 @@ export default {
   <div>
     <div v-for="product in paginatedProducts" :key="product.tenSp" @click="selectProduct(product)">
       <p>{{ product.tenSp }} - {{ product.tong_sl }}/{{ product.dvt }} - {{ product.gia }}</p>
-      <p>🖊</p>
+      <p>✎</p>
     </div>
 
     <!-- Nút phân trang -->
