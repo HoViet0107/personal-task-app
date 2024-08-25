@@ -6,6 +6,7 @@ export default {
   data() {
     return {
       products: [],
+      allProducts: [],
       currentPage: 1,
       productsPerPage: 5, // Số sản phẩm trên mỗi trang
       selectedProduct: { tenSp: '', tong_sl: null, gia: null, dvt: '' }
@@ -36,6 +37,7 @@ export default {
               data.unshift(product)
             })
             this.products = data
+            this.allProducts = data
           } else {
             console.log('No data available')
           }
@@ -147,6 +149,22 @@ export default {
           console.error('Lỗi khi xóa san pham:', error)
         })
     },
+    // tìm kiếm sản phẩm
+    searchProducts(event) {
+      const searchTerm = event.target.value.toLowerCase()
+
+      console.log(searchTerm)
+      if (searchTerm === '') {
+        this.products = this.allProducts
+      } else {
+        this.products = this.allProducts.filter((product) => {
+          return (
+            product.tenSp.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.dvt.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        })
+      }
+    },
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--
@@ -170,54 +188,56 @@ export default {
 <template>
   <div class="container">
     <!-- Tìm kiếm sản phẩm theo tên, dvt, giá -->
-    <div class="search"></div>
-    <input type="text" placeholder="Tìm kiếm....Vd: tên, dvt, giá" />
-  </div>
-
-  <!-- Danh sách sản phẩm -->
-  <div class="product-list" v-for="product in paginatedProducts" :key="product.tenSp">
-    <p style="font-weight: 500" class="product-item" @click="selectProduct(product)">
-      {{ product.tenSp }} - {{ product.tong_sl }}/{{ product.dvt }} -
-      <span style="font-weight: 500">Giá:</span>
-      {{ product.gia }}
-    </p>
-    <div class="action-button">
-      <p class="goods-btn delete" @click="deleteProduct(product)">⌫</p>
+    <div class="search">
+      <span>⌕</span>
+      <input type="text" placeholder="Tìm kiếm....Vd: tên, dvt, giá" @input="searchProducts" />
     </div>
-  </div>
 
-  <!-- Nút phân trang -->
-  <div class="pagination" v-if="totalPages > 1">
-    <button @click="prevPage" :disabled="currentPage === 1" style="rotate: 180deg">></button>
-    <span>{{ currentPage }} / {{ totalPages }} </span>
-    <button @click="nextPage" :disabled="currentPage === totalPages">></button>
-  </div>
+    <!-- Danh sách sản phẩm -->
+    <div class="product-list" v-for="product in paginatedProducts" :key="product.tenSp">
+      <p style="font-weight: 500" class="product-item" @click="selectProduct(product)">
+        {{ product.tenSp }} - {{ product.tong_sl }}/{{ product.dvt }} -
+        <span style="font-weight: 500">Giá:</span>
+        {{ product.gia }}
+      </p>
+      <div class="action-button">
+        <p class="goods-btn delete" @click="deleteProduct(product)">⌫</p>
+      </div>
+    </div>
 
-  <!-- Thông tin chi tiết sản phẩm -->
-  <div v-if="selectedProduct">
-    <p class="bold">Chi tiết sản phẩm</p>
-    <form @submit.prevent="saveProduct" class="form">
-      <div class="form-group">
-        <label class="form-title" for="editTenSp">Tên sản phẩm</label>
-        <input id="editTenSp" type="text" v-model="selectedProduct.tenSp" />
-      </div>
-      <div class="form-group">
-        <label class="form-title" for="editTongSl">Tổng số lượng</label>
-        <input id="editTongSl" type="number" v-model="selectedProduct.tong_sl" />
-      </div>
-      <div class="form-group">
-        <label class="form-title" for="editGia">Giá</label>
-        <input id="editGia" type="number" v-model="selectedProduct.gia" />
-      </div>
-      <div class="form-group">
-        <label class="form-title" for="editDvt">Đơn vị tính</label>
-        <input id="editDvt" type="text" v-model="selectedProduct.dvt" />
-      </div>
-      <div class="button-group">
-        <button type="reset" class="btn clear" @click="resetForm">↺</button>
-        <button type="submit" class="btn">✔</button>
-      </div>
-    </form>
+    <!-- Nút phân trang -->
+    <div class="pagination" v-if="totalPages > 1">
+      <button @click="prevPage" :disabled="currentPage === 1" style="rotate: 180deg">></button>
+      <span>{{ currentPage }} / {{ totalPages }} </span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">></button>
+    </div>
+
+    <!-- Thông tin chi tiết sản phẩm -->
+    <div v-if="selectedProduct">
+      <p class="bold">Chi tiết sản phẩm</p>
+      <form @submit.prevent="saveProduct" class="form">
+        <div class="form-group">
+          <label class="form-title" for="editTenSp">Tên sản phẩm</label>
+          <input id="editTenSp" type="text" v-model="selectedProduct.tenSp" />
+        </div>
+        <div class="form-group">
+          <label class="form-title" for="editTongSl">Tổng số lượng</label>
+          <input id="editTongSl" type="number" v-model="selectedProduct.tong_sl" />
+        </div>
+        <div class="form-group">
+          <label class="form-title" for="editGia">Giá</label>
+          <input id="editGia" type="number" v-model="selectedProduct.gia" />
+        </div>
+        <div class="form-group">
+          <label class="form-title" for="editDvt">Đơn vị tính</label>
+          <input id="editDvt" type="text" v-model="selectedProduct.dvt" />
+        </div>
+        <div class="button-group">
+          <button type="reset" class="btn clear" @click="resetForm">↺</button>
+          <button type="submit" class="btn">✔</button>
+        </div>
+      </form>
+    </div>
   </div>
   <!-- </div> -->
 </template>
@@ -227,7 +247,8 @@ export default {
 .form-group,
 .pagination,
 .action-button,
-.button-group {
+.button-group,
+.search {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -253,6 +274,20 @@ export default {
 }
 .bold {
   font-weight: 900;
+}
+
+/* tìm kiếm */
+.search {
+  width: 200px;
+  margin: 10px auto;
+  border: 2px solid #298a5e;
+  border-radius: 5px;
+  padding: 2px 8px;
+}
+.search > input {
+  padding: 5px;
+  width: 100%;
+  border: none;
 }
 
 /* ẩn đi cái nút chỉnh lên xuống của input */
