@@ -48,7 +48,6 @@ export default {
       this.selectedProduct = { ...product }
     },
     saveProduct() {
-      console.log(this.selectedProduct)
       if (
         this.selectedProduct.tenSp === '' ||
         this.selectedProduct.tong_sl === null ||
@@ -74,12 +73,14 @@ export default {
             const goods = snapshot.val()
             let isExist = false
             let id = null
+            let current_good = {}
 
             // Kiểm tra xem sản phẩm đã tồn tại chưa
             snapshot.forEach((snap_item) => {
               if (snap_item.val().tenSp === goodData.tenSp) {
                 isExist = true
                 id = snap_item.key
+                current_good = snap_item.val()
               }
             })
 
@@ -99,14 +100,21 @@ export default {
             } else {
               // cập nhật sản phẩm nếu thông tin bị thay đổi
               const updateRef = ref(database, `goods/${id}`)
-              set(updateRef, goodData)
-                .then(() => {
-                  this.fetchProducts()
-                })
-                .catch((error) => {
-                  console.error('Lỗi khi cập nhật san pham:', error)
-                  alert('Lỗi khi cập nhật sản phẩm!')
-                })
+
+              if (
+                current_good.tong_sl === goodData.tong_sl &&
+                current_good.dvt === goodData.dvt &&
+                current_good.gia === goodData.gia
+              ) {
+                set(updateRef, goodData)
+                  .then(() => {
+                    this.fetchProducts()
+                  })
+                  .catch((error) => {
+                    console.error('Lỗi khi cập nhật san pham:', error)
+                    alert('Lỗi khi cập nhật sản phẩm!')
+                  })
+              }
             }
           } else {
             // Nếu không có sản phẩm nào, tạo đối tượng mới với sản phẩm đầu tiên
@@ -133,7 +141,7 @@ export default {
       remove(deleteRef)
         .then(() => {
           alert('Xóa sản phẩm thành công!')
-          // this.fetchProducts() // Tải lại danh sách hóa đơn sau khi xóa
+          this.fetchProducts() // Tải lại danh sách hóa đơn sau khi xóa
         })
         .catch((error) => {
           console.error('Lỗi khi xóa san pham:', error)
@@ -148,6 +156,9 @@ export default {
       if (this.currentPage < this.totalPages) {
         this.currentPage++
       }
+    },
+    resetForm() {
+      this.selectedProduct = {}
     }
   },
   created() {
@@ -203,7 +214,7 @@ export default {
         <input id="editDvt" type="text" v-model="selectedProduct.dvt" />
       </div>
       <div class="button-group">
-        <button type="reset" class="btn clear">↺</button>
+        <button type="reset" class="btn clear" @click="resetForm">↺</button>
         <button type="submit" class="btn">✔</button>
       </div>
     </form>
