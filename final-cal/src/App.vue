@@ -21,8 +21,10 @@ import { RouterLink, RouterView } from 'vue-router'
 <style scoped>
 .wrapper {
   max-width: 380px;
-  margin: 10px auto 2rem auto;
-  height: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100vh;
+  overflow: hidden;
 }
 .header-wrapper {
   float: right;
@@ -50,5 +52,6 @@ import { RouterLink, RouterView } from 'vue-router'
 .container {
   margin: 5px 5px 5px 5px;
   position: relative;
+  min-height: 100vh;
 }
 </style>

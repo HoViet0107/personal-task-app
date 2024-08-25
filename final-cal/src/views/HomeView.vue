@@ -30,7 +30,8 @@ export default {
         sl: null,
         gia: null,
         thanhtien: null,
-        dvt: ''
+        dvt: '',
+        tong_sl: null
       })
     },
     addReturnProduct() {
@@ -40,12 +41,13 @@ export default {
         sl: null,
         gia: null,
         thanhtien: null,
-        dvt: ''
+        dvt: '',
+        tong_sl: null
       })
     },
     // Tính toán thành tiền của từng sản phẩm
     calculateTotal(product) {
-      if (product.dvt.toLowerCase() === 'thùng' || product.dvt.toLowerCase === 'dây') {
+      if (product.dvt.toLowerCase() === 'thùng' || product.dvt.toLowerCase() === 'dây') {
         product.thanhtien = product.sl * product.tong_sl * product.gia
       } else {
         // nếu dvt không phải thùng thì tính lẻ từng cái
@@ -137,14 +139,16 @@ export default {
           gia: product.gia,
           sl: product.sl,
           thanhtien: product.thanhtien,
-          tenSp: product.tenSp
+          tenSp: product.tenSp,
+          tong_sl: product.tong_sl
         }))
         const thuveData = this.returnProductData.map((re_product) => ({
           dvt: re_product.dvt,
           gia: re_product.gia,
           sl: re_product.sl,
           thanhtien: re_product.thanhtien,
-          tenSp: re_product.tenSp
+          tenSp: re_product.tenSp,
+          tong_sl: re_product.tong_sl
         }))
 
         const dataRef = ref(database, 'hoadon/' + ngay)
@@ -393,147 +397,147 @@ export default {
       <input required v-model="khachHang" />
     </div>
     <!-- bảng hóa đơn -->
-    <table class="table">
-      <caption>
-        Hóa đơn
-      </caption>
-      <tr>
-        <td scope="col" class="table-header stt"></td>
-        <td scope="col" class="table-header val-sl">Sl</td>
-        <td scope="col" class="table-header val-dvt">ĐVT</td>
-        <td scope="col" class="table-header ten_sp">Tên SP</td>
-        <td scope="col" class="table-header val-gia_sp">Giá</td>
-        <td scope="col" class="table-header val-thanh_tien">TT</td>
-        <td scope="col" class="table-header val-hanh_dong"></td>
-      </tr>
-      <tr v-for="(product, index) in productData" :key="index">
-        <td scope="col">{{ index + 1 }}</td>
-        <!-- sl -->
-        <td scope="value" class="val-sl">
-          <input
-            type="number"
-            v-model="product.sl"
-            class="sl-input"
-            @input="calculateTotal(product)"
-          />
-        </td>
-        <!-- dvt -->
-        <td scope="value" class="val-dvt dvt-style">
-          <input
-            type="text"
-            v-model="product.dvt"
-            class="dvt-input"
-            @input="calculateTotal(product)"
-          />
-        </td>
-        <!-- tên sp -->
-        <td scope="value">
-          <input
-            type="text"
-            v-model="product.tenSp"
-            class="ten_sp-input"
-            @input="fetchProductSuggestions(product.tenSp, index, 'product')"
-          />
-          <!-- Gợi ý sản phẩm -->
-          <ul v-if="showSuggestions && index === forcusIdx" class="suggestions-list">
-            <li
-              v-for="(suggestion, sIndex) in suggestions"
-              :key="sIndex"
-              @click="handleProductSelect(suggestion, index, 'product')"
-            >
-              {{ suggestion.tenSp }}
-            </li>
-          </ul>
-        </td>
-        <!-- giá -->
-        <td scope="value" class="val-gia_sp">
-          <input
-            type="number"
-            class="gia-input"
-            v-model="product.gia"
-            @input="calculateTotal(product)"
-          />
-        </td>
-        <!-- thành tiền -->
-        <td scope="col" class="val-thanh_tien thanh_tien_style">
-          <input class="thanh_tien-input" :value="product.thanhtien" readonly />
-        </td>
-        <td class="val-hanh_dong" @click="removeProduct(index, 'product')"><p>⌫</p></td>
-      </tr>
-    </table>
+    <div>Hoá đơn</div>
+    <div class="table-wrap">
+      <table class="table">
+        <tr>
+          <td scope="col" class="table-header stt"></td>
+          <td scope="col" class="table-header val-sl">Sl</td>
+          <td scope="col" class="table-header val-dvt">ĐVT</td>
+          <td scope="col" class="table-header ten_sp">Tên SP</td>
+          <td scope="col" class="table-header val-gia_sp">Giá</td>
+          <td scope="col" class="table-header val-thanh_tien">TT</td>
+          <td scope="col" class="table-header val-hanh_dong"></td>
+        </tr>
+        <tr v-for="(product, index) in productData" :key="index">
+          <td scope="col">{{ index + 1 }}</td>
+          <!-- sl -->
+          <td scope="value" class="val-sl">
+            <input
+              type="number"
+              v-model="product.sl"
+              class="sl-input"
+              @input="calculateTotal(product)"
+            />
+          </td>
+          <!-- dvt -->
+          <td scope="value" class="val-dvt dvt-style">
+            <input
+              type="text"
+              v-model="product.dvt"
+              class="dvt-input"
+              @input="calculateTotal(product)"
+            />
+          </td>
+          <!-- tên sp -->
+          <td scope="value">
+            <input
+              type="text"
+              v-model="product.tenSp"
+              class="ten_sp-input"
+              @input="fetchProductSuggestions(product.tenSp, index, 'product')"
+            />
+            <!-- Gợi ý sản phẩm -->
+            <ul v-if="showSuggestions && index === forcusIdx" class="suggestions-list">
+              <li
+                v-for="(suggestion, sIndex) in suggestions"
+                :key="sIndex"
+                @click="handleProductSelect(suggestion, index, 'product')"
+              >
+                {{ suggestion.tenSp }}
+              </li>
+            </ul>
+          </td>
+          <!-- giá -->
+          <td scope="value" class="val-gia_sp">
+            <input
+              type="number"
+              class="gia-input"
+              v-model="product.gia"
+              @input="calculateTotal(product)"
+            />
+          </td>
+          <!-- thành tiền -->
+          <td scope="col" class="val-thanh_tien thanh_tien_style">
+            <input class="thanh_tien-input" :value="product.thanhtien" readonly />
+          </td>
+          <td class="val-hanh_dong" @click="removeProduct(index, 'product')"><p>⌫</p></td>
+        </tr>
+      </table>
+    </div>
     <!-- thêm sp vào hóa đơn -->
     <button class="btn" style="margin-top: 10px" @click="addProduct">+</button>
     <!-- ------------------------------------------------------------ -->
 
     <!-- bảng thu về -->
-    <table class="table">
-      <caption>
-        Hàng thu về
-      </caption>
-      <tr>
-        <td scope="col" class="table-header stt"></td>
-        <td scope="col" class="table-header val-sl">Sl</td>
-        <td scope="col" class="table-header val-dvt">ĐVT</td>
-        <td scope="col" class="table-header ten_sp">Tên SP</td>
-        <td scope="col" class="table-header val-gia_sp">Giá</td>
-        <td scope="col" class="table-header val-thanh_tien">TT</td>
-        <td scope="col" class="table-header val-hanh_dong"></td>
-      </tr>
-      <tr v-for="(product, index) in returnProductData" :key="index">
-        <td scope="col">{{ index + 1 }}</td>
-        <!-- sl -->
-        <td scope="value" class="val-sl">
-          <input
-            type="number"
-            v-model="product.sl"
-            class="sl-input"
-            @input="calculateTotal(product)"
-          />
-        </td>
-        <!-- dvt -->
-        <td scope="value" class="val-dvt dvt-style">
-          <input
-            type="text"
-            v-model="product.dvt"
-            class="dvt-input"
-            @input="calculateTotal(product)"
-          />
-        </td>
-        <!-- tên sp -->
-        <td scope="value">
-          <input
-            type="text"
-            v-model="product.tenSp"
-            class="ten_sp-input"
-            @input="fetchProductSuggestions(product.tenSp, index, 're_data')"
-          />
-          <!-- Gợi ý sản phẩm -->
-          <ul v-if="reShowSuggestions && index === re_forcusIdx" class="suggestions-list">
-            <li
-              v-for="(suggestion, sIndex) in suggestions"
-              :key="sIndex"
-              @click="handleProductSelect(suggestion, index, 're_data')"
-            >
-              {{ suggestion.tenSp }}
-            </li>
-          </ul>
-        </td>
-        <!-- giá -->
-        <td scope="value" class="val-gia_sp">
-          <input
-            type="number"
-            class="gia-input"
-            v-model="product.gia"
-            @input="calculateTotal(product)"
-          />
-        </td>
-        <!-- thành tiền -->
-        <td scope="col" class="val-thanh_tien thanh_tien_style">
-          <input class="thanh_tien-input" :value="product.thanhtien" readonly />
-        </td>
-        <td class="val-hanh_dong" @click="removeProduct(index, 'return_product')"><p>⌫</p></td>
-      </tr>
-    </table>
+    <div>Hàng thu về</div>
+    <div class="table-wrap">
+      <table class="table">
+        <tr>
+          <td scope="col" class="table-header stt"></td>
+          <td scope="col" class="table-header val-sl">Sl</td>
+          <td scope="col" class="table-header val-dvt">ĐVT</td>
+          <td scope="col" class="table-header ten_sp">Tên SP</td>
+          <td scope="col" class="table-header val-gia_sp">Giá</td>
+          <td scope="col" class="table-header val-thanh_tien">TT</td>
+          <td scope="col" class="table-header val-hanh_dong"></td>
+        </tr>
+        <tr v-for="(product, index) in returnProductData" :key="index">
+          <td scope="col">{{ index + 1 }}</td>
+          <!-- sl -->
+          <td scope="value" class="val-sl">
+            <input
+              type="number"
+              v-model="product.sl"
+              class="sl-input"
+              @input="calculateTotal(product)"
+            />
+          </td>
+          <!-- dvt -->
+          <td scope="value" class="val-dvt dvt-style">
+            <input
+              type="text"
+              v-model="product.dvt"
+              class="dvt-input"
+              @input="calculateTotal(product)"
+            />
+          </td>
+          <!-- tên sp -->
+          <td scope="value">
+            <input
+              type="text"
+              v-model="product.tenSp"
+              class="ten_sp-input"
+              @input="fetchProductSuggestions(product.tenSp, index, 're_data')"
+            />
+            <!-- Gợi ý sản phẩm -->
+            <ul v-if="reShowSuggestions && index === re_forcusIdx" class="suggestions-list">
+              <li
+                v-for="(suggestion, sIndex) in suggestions"
+                :key="sIndex"
+                @click="handleProductSelect(suggestion, index, 're_data')"
+              >
+                {{ suggestion.tenSp }}
+              </li>
+            </ul>
+          </td>
+          <!-- giá -->
+          <td scope="value" class="val-gia_sp">
+            <input
+              type="number"
+              class="gia-input"
+              v-model="product.gia"
+              @input="calculateTotal(product)"
+            />
+          </td>
+          <!-- thành tiền -->
+          <td scope="col" class="val-thanh_tien thanh_tien_style">
+            <input class="thanh_tien-input" :value="product.thanhtien" readonly />
+          </td>
+          <td class="val-hanh_dong" @click="removeProduct(index, 'return_product')"><p>⌫</p></td>
+        </tr>
+      </table>
+    </div>
 
     <!-- thêm sp thu về -->
     <button class="btn" style="margin-top: 10px" @click="addReturnProduct">+</button>
@@ -566,6 +570,10 @@ header {
   margin-top: 10px;
   font-size: 16px;
   margin-left: 10px;
+}
+.table-wrap {
+  max-height: 180px;
+  overflow-y: scroll;
 }
 .khach-hang > p {
   width: 150px;
@@ -686,21 +694,6 @@ input[type='number']::-webkit-inner-spin-button {
 .tong-tien > span {
   color: #00bd7e;
   font-weight: bold;
-}
-/* hiển thị chi tiết sản phẩm */
-.product-details {
-  position: absolute;
-  left: 0; /* Đặt vị trí bên trái của `input` */
-  bottom: 30px; /* Đặt vị trí phía trên của `input` */
-  transform: translateX(-100%) !important; /* Đẩy phần chi tiết sang bên trái */
-  transform: translateY(-100%); /* Đẩy phần chi tiết lên trên */
-  width: max-content;
-  height: fit-content;
-  background-color: white;
-  border: 1px solid #00bd7e;
-  border-radius: 5px;
-  padding: 5px;
-  z-index: 1000;
 }
 
 /* các nút */

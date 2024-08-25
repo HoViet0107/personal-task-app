@@ -195,8 +195,6 @@ export default {
 
 <template>
   <div class="container">
-    <h3>Danh sách hóa đơn</h3>
-
     <!-- Chọn ngày -->
     <div class="date-select">
       <label class="bold" for="select-date">Chọn ngày:&nbsp;</label>
@@ -219,7 +217,7 @@ export default {
           <li class="span-li" v-for="invoice in paginatedInvoices" :key="invoice.id">
             <p class="kh-li" @click="viewInvoice(invoice)">{{ invoice.khachHang }}</p>
             <div>
-              <button class="btn" @click="deleteInvoice(invoice.id)">🗑</button>
+              <button class="btn" @click="deleteInvoice(invoice.id)">⌫</button>
               <button class="btn" @click="editInvoice(invoice)">✎</button>
             </div>
           </li>
@@ -243,8 +241,8 @@ export default {
     </div>
 
     <!-- Chi tiết hóa đơn -->
+
     <div v-if="selectedInvoice">
-      <h3>Chi tiết hóa đơn</h3>
       <p>
         <strong class="bold">Khách hàng:</strong> {{ selectedInvoice.khachHang }}
         <span class="float-right bold" style="color: #2fbd7e"
@@ -253,6 +251,7 @@ export default {
         <span class="bold float-right">Thành tiền: </span>
       </p>
       <p><strong class="bold">Ngày:</strong> {{ selectedInvoice.ngay }}</p>
+
       <ul class="">
         <li class="detail-li first">
           <span>SL</span>
@@ -262,33 +261,31 @@ export default {
           <span>- TT</span>
         </li>
       </ul>
-      <ul class="bill-detail bold">
-        <li class="detail-li" v-for="(product, index) in selectedInvoice.sanPham" :key="index">
-          <span class="li-span"
-            >{{ product.sl }}<span style="font-size: 20px; font-weight: 900">·</span></span
-          >
-          <span class="li-span">{{ product.dvt }}</span> -
-          <span class="li-span">{{ product.tenSp }}</span> x
-          <span class="li-span">{{ product.gia }}</span> =
-          <span style="color: red; font-weight: bold">{{ product.thanhtien }}</span>
-        </li>
-      </ul>
-      <span class="bold"> Thu về</span>
-      <ul class="bill-detail">
-        <li class="detail-li" v-for="(product, index) in selectedInvoice.thuVe" :key="index">
-          <span class="li-span"
-            >{{ product.sl }}<span style="font-size: 20px; font-weight: 900">·</span></span
-          >
-          <span class="li-span">{{ product.dvt }}</span> -
-          <span class="li-span">{{ product.tenSp }}</span> x
-          <span class="li-span">{{ product.gia }}</span> =
-          <span style="color: red; font-weight: bold">{{ product.thanhtien }}</span>
-        </li>
-      </ul>
-      <p style="font-size: 1.2rem">
-        <strong>Tổng tiền: </strong>
-        <span style="font-weight: 700; color: green">{{ selectedInvoice.tongTien }}</span>
-      </p>
+      <div class="invoice-detail">
+        <ul class="bill-detail bold">
+          <li class="detail-li" v-for="(product, index) in selectedInvoice.sanPham" :key="index">
+            <span class="li-span bold"
+              >{{ product.sl }}<span style="font-size: 20px; font-weight: 900">·</span></span
+            >
+            <span class="li-span">{{ product.dvt }}</span> -
+            <span class="li-span">{{ product.tenSp }}</span> x
+            <span class="li-span bold">{{ product.gia }}</span> =
+            <span class="bold" style="color: red">{{ product.thanhtien }}</span>
+          </li>
+        </ul>
+        <span class="bold"> Thu về</span>
+        <ul class="bill-detail">
+          <li class="detail-li" v-for="(product, index) in selectedInvoice.thuVe" :key="index">
+            <span class="li-span bold"
+              >{{ product.sl }}<span style="font-size: 20px; font-weight: 900">·</span></span
+            >
+            <span class="li-span">{{ product.dvt }}</span> -
+            <span class="li-span">{{ product.tenSp }}</span> x
+            <span class="li-span bold">{{ product.gia }}</span> =
+            <span class="bold" style="color: red">{{ product.thanhtien }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -320,6 +317,7 @@ h3 {
   display: flex;
   justify-content: space-between;
   margin: 10px 0;
+  width: 285px !important;
 }
 .span-li div > button {
   margin-left: 10px;
@@ -329,7 +327,7 @@ h3 {
   cursor: pointer;
   border: 2px solid #298a5e;
   color: #298a5e;
-  padding: 5px 10px;
+  padding: 0 10px;
   border-radius: 5px;
   transition: 0.3s all linear;
   &:hover {
@@ -339,6 +337,16 @@ h3 {
 }
 
 /* Chi tiết hóa đơn */
+.invoice-detail {
+  height: 350px;
+  overflow-y: scroll;
+}
+/* iphone */
+@media screen and (max-width: 400px) {
+  .invoice-detail {
+    height: 200px;
+  }
+}
 .detail-li.first {
   list-style: none;
 }
@@ -361,8 +369,8 @@ h3 {
   background: #2fbd7e;
   color: #fff;
   cursor: pointer;
-  padding: 0 15px;
-  font-size: 20px;
+  padding: 3px 10px;
+  font-size: 16px;
   transition: 0.3s;
   &:hover {
     background: #298a5e;
